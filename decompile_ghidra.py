@@ -1,5 +1,5 @@
 import os
-import shutil
+import platform
 import subprocess
 import sys
 import tempfile
@@ -12,7 +12,7 @@ load_dotenv()
 GHIDRA_INSTALL = Path(os.getenv("GHIDRA_INSTALL_DIR", ""))
 
 if len(f"{GHIDRA_INSTALL}") < 3:
-    print("[Error] Please enter the folder where ghidra is installed in the .env file into GHIDRA_INSTALL_PATH. ")
+    print("[Error] Please enter the folder where ghidra is installed in the .env file into GHIDRA_INSTALL_DIR. ")
     sys.exit(0)
 
 GHIDRA_HEADLESS = GHIDRA_INSTALL / 'support' / 'analyzeHeadless'
@@ -46,11 +46,14 @@ def main(file_name, results_dir):
         env['PATH'] = f"{parent_dir}/jdk/bin:{env['PATH']}"
 
         if not os.path.exists(output_file):
-            decomp = subprocess.run(decompile_command, capture_output=True, env=env, shell=True)
+            if platform.system() == "Windows":
+                decomp = subprocess.run(decompile_command, capture_output=True, env=env, shell=True)
+            else :
+                decomp = subprocess.run(decompile_command, capture_output=True, env=env)
             if decomp.returncode != 0 or not os.path.exists(output_file):
-                print(f'{decomp.stdout.decode()}\n{decomp.stderr.decode()}')
+                print(f'[Error]\n{decomp.stdout.decode()}\n{decomp.stderr.decode()}')
                 sys.exit(1)
-        with open(output_file, 'r') as f:
+        with open(output_file, 'r', errors="ignore") as f:
             result = f.read()
             with open(results_dir / f"{file_name.stem}.txt", 'w') as ff:
                 ff.write(result)
