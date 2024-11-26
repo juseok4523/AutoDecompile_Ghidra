@@ -46,6 +46,7 @@ def main(file_name, results_dir):
         env['PATH'] = f"{parent_dir}/jdk/bin:{env['PATH']}"
 
         if not os.path.exists(output_file):
+            print(f"[INFO] Decompiling {inname}...")
             if platform.system() == "Windows":
                 decomp = subprocess.run(decompile_command, capture_output=True, env=env, shell=True)
             else :
@@ -53,10 +54,13 @@ def main(file_name, results_dir):
             if decomp.returncode != 0 or not os.path.exists(output_file):
                 print(f'[Error]\n{decomp.stdout.decode()}\n{decomp.stderr.decode()}')
                 sys.exit(1)
+        results_file = results_dir / f"{file_name.stem}.txt"
+        print(f"[INFO] Completion of Decompile {inname}. Save result value to {results_file}..")
         with open(output_file, 'r', errors="ignore") as f:
             result = f.read()
-            with open(results_dir / f"{file_name.stem}.txt", 'w') as ff:
+            with open(results_file, 'w') as ff:
                 ff.write(result)
+        print("[INFO] Done.")
 
 
 if __name__ == '__main__':
