@@ -8,10 +8,13 @@ import argparse
 from dotenv import load_dotenv
 
 load_dotenv()
+
 GHIDRA_INSTALL = Path(os.getenv("GHIDRA_INSTALL_DIR", ""))
+
 if len(f"{GHIDRA_INSTALL}") < 3:
     print("[Error] Please enter the folder where ghidra is installed in the .env file into GHIDRA_INSTALL_PATH. ")
     sys.exit(0)
+
 GHIDRA_HEADLESS = GHIDRA_INSTALL / 'support' / 'analyzeHeadless'
 
 GHIDRA_APP_PROPERTIES = GHIDRA_INSTALL / 'Ghidra' / 'application.properties'
