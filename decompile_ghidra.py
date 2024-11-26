@@ -5,8 +5,10 @@ import sys
 import tempfile
 from pathlib import Path
 import argparse
+from dotenv import load_dotenv
 
-GHIDRA_INSTALL = Path(os.getenv("GHIDRA_INSTALL_PATH"))
+load_dotenv()
+GHIDRA_INSTALL = Path(os.getenv("GHIDRA_INSTALL_DIR", ""))
 if len(f"{GHIDRA_INSTALL}") < 3:
     print("[Error] Please enter the folder where ghidra is installed in the .env file into GHIDRA_INSTALL_PATH. ")
     sys.exit(0)
